@@ -530,7 +530,10 @@ class RNN(Layer):
 
         if is_keras_tensor:
             # Compute the full input spec, including state and constants
-            full_input = [inputs] + additional_inputs
+            if isinstance(inputs, list):
+                full_input = inputs + additional_inputs
+            else:
+                 full_input = [inputs] + additional_inputs
             full_input_spec = self.input_spec + additional_specs
             # Perform the call with temporarily replaced input_spec
             original_input_spec = self.input_spec
@@ -2243,6 +2246,10 @@ def _standardize_args(inputs, initial_state, constants, num_constants):
         initial_state: list of tensors or None
         constants: list of tensors or None
     """
+    if initial_state is not None or constants is not None:
+        print("***** Skipping recurrent.py _standardise_args *****")
+        return inputs, initial_state, constants
+
     if isinstance(inputs, list):
         assert initial_state is None and constants is None
         if num_constants is not None:
